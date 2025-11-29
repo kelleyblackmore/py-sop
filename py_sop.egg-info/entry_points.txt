@@ -1,0 +1,2 @@
+[console_scripts]
+py-sop = py_sop.cli:main
