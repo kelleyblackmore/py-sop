@@ -94,6 +94,57 @@ class TestSOPTemplate:
         assert len(template.sections) == 1
         assert template.sections[0].title == "Section 1"
 
+    def test_template_from_dict_with_subsections(self):
+        """Test creating template from dictionary with nested subsections."""
+        data = {
+            "title": "Nested SOP",
+            "purpose": "Test nested sections",
+            "scope": "",
+            "sections": [{
+                "title": "Main Section",
+                "content": "Main content",
+                "subsections": [
+                    {"title": "Subsection A", "content": "Sub A content"},
+                    {"title": "Subsection B", "content": "Sub B content"},
+                ]
+            }],
+        }
+        template = SOPTemplate.from_dict(data)
+        assert template.title == "Nested SOP"
+        assert len(template.sections) == 1
+        assert template.sections[0].title == "Main Section"
+        assert len(template.sections[0].subsections) == 2
+        assert template.sections[0].subsections[0].title == "Subsection A"
+        assert template.sections[0].subsections[1].title == "Subsection B"
+
+
+class TestSOPSectionFromDict:
+    """Tests for SOPSection.from_dict method."""
+
+    def test_section_from_dict_simple(self):
+        """Test creating a simple section from dictionary."""
+        data = {"title": "Test", "content": "Content"}
+        section = SOPSection.from_dict(data)
+        assert section.title == "Test"
+        assert section.content == "Content"
+        assert section.subsections == []
+
+    def test_section_from_dict_with_subsections(self):
+        """Test creating section with subsections from dictionary."""
+        data = {
+            "title": "Parent",
+            "content": "Parent content",
+            "subsections": [
+                {"title": "Child 1", "content": "Child 1 content"},
+                {"title": "Child 2", "content": "Child 2 content"},
+            ]
+        }
+        section = SOPSection.from_dict(data)
+        assert section.title == "Parent"
+        assert len(section.subsections) == 2
+        assert section.subsections[0].title == "Child 1"
+        assert section.subsections[1].title == "Child 2"
+
 
 class TestTemplateTypes:
     """Tests for predefined template types."""

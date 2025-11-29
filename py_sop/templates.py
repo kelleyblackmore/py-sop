@@ -32,6 +32,18 @@ class SOPSection:
             lines.append(subsection.to_markdown(level + 1))
         return "\n".join(lines)
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "SOPSection":
+        """Create a section from a dictionary."""
+        subsections = []
+        for sub_data in data.get("subsections", []):
+            subsections.append(cls.from_dict(sub_data))
+        return cls(
+            title=data.get("title", ""),
+            content=data.get("content", ""),
+            subsections=subsections,
+        )
+
 
 @dataclass
 class SOPTemplate:
@@ -102,10 +114,7 @@ class SOPTemplate:
         """Create a template from a dictionary."""
         sections = []
         for section_data in data.get("sections", []):
-            sections.append(SOPSection(
-                title=section_data.get("title", ""),
-                content=section_data.get("content", ""),
-            ))
+            sections.append(SOPSection.from_dict(section_data))
         return cls(
             title=data.get("title", "Untitled SOP"),
             purpose=data.get("purpose", ""),
